@@ -1,0 +1,17 @@
+export default {
+  primary: "#997743",
+  secondary: "#be9d6b",
+  black: "#000",
+  white: "#fff",
+  textLight: "#654321",
+  textHighlight: "#436599",
+  textDark: "#654321",
+  beigeBreak: "#cfb997",
+  screenBackground: "#f0ead6",
+  screenCards: "#e5d7c2",
+  imageBorders: "#cfb997",
+  danger: "#ff5252",
+  dangerPressed: "#cc3f3f",
+  frameBeige: "#997743",
+  placeholder: "#bbae9d",
+};
