@@ -19,6 +19,10 @@ const FeedNavigator = () => (
         fontSize: 20,
         color: colors.primary,
       },
+      headerTintColor: colors.white,
+      headerStyle: {
+        backgroundColor: colors.white,
+      },
     }}
   >
     <Stack.Screen name="Events" component={EventsScreen} />

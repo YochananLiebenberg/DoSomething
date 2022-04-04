@@ -96,14 +96,14 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: colors.white,
     alignContent: "center",
     justifyContent: "center",
   },
   headerText: {
     alignSelf: "center",
     paddingTop: 60,
-    paddingBottom: 10,
+    paddingBottom: 8,
     fontWeight: "600",
     fontSize: 20,
     color: colors.primary,

@@ -19,6 +19,10 @@ const AccountNavigator = () => (
         fontSize: 20,
         color: colors.primary,
       },
+      headerTintColor: colors.white,
+      headerStyle: {
+        backgroundColor: colors.white,
+      },
     }}
   >
     <Stack.Screen name="Account" component={AccountScreen} />

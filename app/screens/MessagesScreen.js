@@ -61,11 +61,16 @@ function MessagesScreen(props) {
             },
           ])
         }
+        style={styles.container}
       />
     </Screen>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 20,
+  },
+});
 
 export default MessagesScreen;
