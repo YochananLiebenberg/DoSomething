@@ -28,35 +28,21 @@ import ImageInputList from "./app/components/ImageInputList";
 import AuthNavigator from "./app/navigation/AuthNavigator";
 import navigationTheme from "./app/navigation/navigationTheme";
 import AppNavigator from "./app/navigation/AppNagivator";
-
-const Tweets = ({ navigation }) => (
-  <Screen>
-    <Text>Tweets</Text>
-    <Button
-      title="View tweet"
-      onPress={() => navigation.navigate("TweetDetails")}
-    />
-  </Screen>
-);
-
-const TweetDetails = () => (
-  <Screen>
-    <Text>Tweet details</Text>
-  </Screen>
-);
-
-const Stack = createStackNavigator();
-const StackNavigator = () => (
-  <NavigationContainer>
-    <AuthNavigator />
-  </NavigationContainer>
-);
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import OfflineNotice from "./app/components/OfflineNotice";
+import AuthContext from "./app/auth/context";
 
 export default function App() {
+  const [user, setUser] = useState();
+
   console.disableYellowBox = true;
   return (
-    <NavigationContainer theme={navigationTheme}>
-      <AppNavigator />
-    </NavigationContainer>
+    <AuthContext.Provider value={{ user, setUser }}>
+      <OfflineNotice />
+      <NavigationContainer theme={navigationTheme}>
+        {user ? <AppNavigator /> : <AuthNavigator />}
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }

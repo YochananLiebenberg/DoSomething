@@ -6,6 +6,8 @@ import colors from "../config/colors";
 import eventsApi from "../api/events";
 import AppText from "../components/AppText";
 import AppButton from "../components/AppButton";
+import ActivityIndicator from "../components/ActivityIndicator";
+import useApi from "../Hooks/useApi";
 /*
 const events = [
   {
@@ -24,32 +26,25 @@ const events = [
 */
 
 function EventsScreen({ navigation }) {
-  const [events, setEvents] = useState([]);
-  const [error, setError] = useState(false);
+  const getEventsApi = useApi(eventsApi.getEvents);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    loadEvents();
+    getEventsApi.request();
   }, []);
-
-  const loadEvents = async () => {
-    const response = await eventsApi.getEvents();
-    if (!response.ok) {
-      setError(true);
-    }
-    setError(false);
-    setEvents(response.data);
-  };
 
   return (
     <Screen style={styles.screen}>
-      {error && (
+      {getEventsApi.error && (
         <>
           <AppText>Events cannot be retrived from the server.</AppText>
-          <AppButton title="Retry" onPress={loadEvents} />
+          <AppButton title="Retry" onPress={getEventsApi.request} />
         </>
       )}
+      <ActivityIndicator visible={getEventsApi.loading} />
+
       <FlatList
-        data={events}
+        data={getEventsApi.data}
         keyExtractor={(singleEvent) => singleEvent.id.toString()}
         renderItem={({ item }) => (
           <Card
@@ -57,8 +52,14 @@ function EventsScreen({ navigation }) {
             subTitle={item.time}
             imageUrl={item.images[0].url}
             onPress={() => navigation.navigate("EventDetails", item)}
+            style={styles.card}
+            thumbnailUrl={item.images[0].thumbnailUrl}
           />
         )}
+        refreshing={refreshing}
+        onRefresh={() => {
+          getEventsApi.request();
+        }}
       />
     </Screen>
   );
@@ -67,6 +68,12 @@ const styles = StyleSheet.create({
   screen: {
     padding: 20,
     backgroundColor: colors.screenBackground,
+  },
+  card: {
+    shadowColor: "#470000",
+    shadowOffset: { width: 0, height: 7 },
+    shadowOpacity: 0.2,
+    elevation: 1,
   },
 });
 

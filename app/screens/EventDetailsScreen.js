@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ListItem from "../components/ListItem";
 import { ScrollView } from "react-native-gesture-handler";
+import { Image } from "react-native-expo-image-cache";
 
 function EventDetailsScreen({ route }) {
   const event = route.params;
@@ -11,7 +12,12 @@ function EventDetailsScreen({ route }) {
     <ScrollView bounces={false}>
       <View style={styles.container}>
         <View style={styles.imageFrame}>
-          <Image source={event.image} style={styles.image} />
+          <Image
+            uri={event.images[0].url}
+            style={styles.image}
+            preview={{ uri: event.images[0].thumbnailUrl }}
+            tint="light"
+          />
         </View>
 
         <View style={styles.descriptionContainer}>

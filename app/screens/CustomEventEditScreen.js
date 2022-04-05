@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, Platform } from "react-native";
 import * as Yup from "yup";
 
 import CategoryPickerItem from "../components/CategoryPickerItem";
+import eventsApi from "../api/events";
 
 import {
   AppForm,
@@ -15,6 +16,7 @@ import AppFormImagePicker from "../components/forms/AppFormImagePicker";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
 import useLocation from "../Hooks/useLocation";
+import SubmitScreen from "./SubmitScreen";
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required().min(1).label("Title"),
@@ -42,6 +44,24 @@ const categories = [
 
 function CustomEventEditScreen() {
   const location = useLocation();
+  const [uploadScreenVisible, setUploadScreenVisible] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const handleSubmit = async (event, { resetForm }) => {
+    setProgress(0);
+    setUploadScreenVisible(true);
+    const result = await eventsApi.addEvent(
+      { ...event, location },
+      (progress) => setProgress(progress)
+    );
+
+    if (!result.ok) {
+      setUploadScreenVisible(false);
+      alert("Could not submit the Event.");
+      return;
+    }
+    resetForm();
+  };
 
   return (
     <>
@@ -49,6 +69,11 @@ function CustomEventEditScreen() {
         <Text style={styles.headerText}>Create Event</Text>
       </View>
       <Screen style={styles.container}>
+        <SubmitScreen
+          onDone={() => setUploadScreenVisible(false)}
+          progress={progress}
+          visible={uploadScreenVisible}
+        />
         <AppForm
           initialValues={{
             title: "",
@@ -57,7 +82,7 @@ function CustomEventEditScreen() {
             category: null,
             images: [],
           }}
-          onSubmit={(values) => console.log(location)}
+          onSubmit={handleSubmit}
           validationSchema={validationSchema}
         >
           <AppFormImagePicker name="images" />
