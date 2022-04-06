@@ -18,34 +18,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import * as Permissions from "expo-permissions";
 import navigation from "./rootNavigation";
 import * as Notifications from "expo-notifications";
+import useNotifications from "../Hooks/useNotifications";
 
 const Tab = createBottomTabNavigator();
 
-const registerForPushNotifications = async () => {
-  try {
-    const permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-    if (!permission.granted) return;
-
-    const token = await Notifications.getExpoPushTokenAsync();
-    expoPushTokensApi.register(token);
-    console.log(token);
-  } catch (error) {
-    console.log("Error getting a push token", error);
-  }
-};
-
 const AppNavigator = () => {
-  useEffect(() => {
-    registerForPushNotifications();
-
-    const Lisner = Notifications.addNotificationResponseReceivedListener(
-      (notification) => {
-        console.log("Notification tapped!\n");
-        navigation.navigate("Account");
-      }
-    );
-  }, []);
-
+  useNotifications(() => navigation.navigate("Account"));
   return (
     <Tab.Navigator>
       <Tab.Screen

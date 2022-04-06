@@ -1,41 +1,49 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Platform } from "react-native";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ListItem from "../components/ListItem";
 import { ScrollView } from "react-native-gesture-handler";
 import { Image } from "react-native-expo-image-cache";
+import { KeyboardAvoidingView } from "react-native";
+import ContactOrganiserForm from "../components/ContactOrganiserForm";
 
 function EventDetailsScreen({ route }) {
   const event = route.params;
   return (
-    <ScrollView bounces={false}>
-      <View style={styles.container}>
-        <View style={styles.imageFrame}>
-          <Image
-            uri={event.images[0].url}
-            style={styles.image}
-            preview={{ uri: event.images[0].thumbnailUrl }}
-            tint="light"
-          />
-        </View>
-
-        <View style={styles.descriptionContainer}>
-          <AppText styles={styles.title}>{event.title}</AppText>
-          <AppText styles={styles.time}>{event.time}</AppText>
-          <View style={styles.membersBreak}>
-            <AppText style={styles.membersTag}>Participants</AppText>
-          </View>
-          <View style={styles.membersContainer}>
-            <ListItem
-              image={require("../assets/yoch.jpg")}
-              title="Yochanan"
-              subTitle="Ornagiser"
+    <KeyboardAvoidingView
+      behavior="position"
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 100}
+    >
+      <ScrollView bounces={false}>
+        <View style={styles.container}>
+          <View style={styles.imageFrame}>
+            <Image
+              uri={event.images[0].url}
+              style={styles.image}
+              preview={{ uri: event.images[0].thumbnailUrl }}
+              tint="light"
             />
           </View>
+
+          <View style={styles.descriptionContainer}>
+            <AppText styles={styles.title}>{event.title}</AppText>
+            <AppText styles={styles.time}>{event.time}</AppText>
+            <View style={styles.membersBreak}>
+              <AppText style={styles.membersTag}>Participants</AppText>
+            </View>
+            <View style={styles.membersContainer}>
+              <ListItem
+                image={require("../assets/yoch.jpg")}
+                title="Mosh"
+                subTitle="mosh@domain.com"
+              />
+            </View>
+            <ContactOrganiserForm event={event} />
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
