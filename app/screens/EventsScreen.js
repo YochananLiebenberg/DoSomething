@@ -34,34 +34,35 @@ function EventsScreen({ navigation }) {
   }, []);
 
   return (
-    <Screen style={styles.screen}>
-      {getEventsApi.error && (
-        <>
-          <AppText>Events cannot be retrived from the server.</AppText>
-          <AppButton title="Retry" onPress={getEventsApi.request} />
-        </>
-      )}
+    <>
       <ActivityIndicator visible={getEventsApi.loading} />
-
-      <FlatList
-        data={getEventsApi.data}
-        keyExtractor={(singleEvent) => singleEvent.id.toString()}
-        renderItem={({ item }) => (
-          <Card
-            title={item.title}
-            subTitle={item.time}
-            imageUrl={item.images[0].url}
-            onPress={() => navigation.navigate("EventDetails", item)}
-            style={styles.card}
-            thumbnailUrl={item.images[0].thumbnailUrl}
-          />
+      <Screen style={styles.screen}>
+        {getEventsApi.error && (
+          <>
+            <AppText>Events cannot be retrived from the server.</AppText>
+            <AppButton title="Retry" onPress={getEventsApi.request} />
+          </>
         )}
-        refreshing={refreshing}
-        onRefresh={() => {
-          getEventsApi.request();
-        }}
-      />
-    </Screen>
+        <FlatList
+          data={getEventsApi.data}
+          keyExtractor={(singleEvent) => singleEvent.id.toString()}
+          renderItem={({ item }) => (
+            <Card
+              title={item.title}
+              subTitle={item.time}
+              imageUrl={item.images[0].url}
+              onPress={() => navigation.navigate("EventDetails", item)}
+              style={styles.card}
+              thumbnailUrl={item.images[0].thumbnailUrl}
+            />
+          )}
+          refreshing={refreshing}
+          onRefresh={() => {
+            getEventsApi.request();
+          }}
+        />
+      </Screen>
+    </>
   );
 }
 const styles = StyleSheet.create({
