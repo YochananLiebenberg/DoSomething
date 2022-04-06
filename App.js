@@ -35,6 +35,8 @@ import AuthContext from "./app/auth/context";
 import authStorage from "./app/auth/storage";
 import jwtDecode from "jwt-decode";
 import AppLoading from "expo-app-loading";
+import { navigationRef } from "./app/navigation/rootNavigation";
+
 export default function App() {
   const [user, setUser] = useState();
   const [isReady, setIsReady] = useState(false);
@@ -55,10 +57,11 @@ export default function App() {
   }
 
   console.disableYellowBox = true;
+
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       <OfflineNotice />
-      <NavigationContainer theme={navigationTheme}>
+      <NavigationContainer ref={navigationRef} theme={navigationTheme}>
         {user ? <AppNavigator /> : <AuthNavigator />}
       </NavigationContainer>
     </AuthContext.Provider>
