@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     shadowColor: "#470000",
     shadowOffset: { width: 7, height: 7 },
     shadowOpacity: 0.2,
-    elevation: 1,
   },
   groupedLogo: {
     alignItems: "center",

@@ -35,7 +35,6 @@ function EventsScreen({ navigation }) {
 
   return (
     <>
-      <ActivityIndicator visible={getEventsApi.loading} />
       <Screen style={styles.screen}>
         {getEventsApi.error && (
           <>
