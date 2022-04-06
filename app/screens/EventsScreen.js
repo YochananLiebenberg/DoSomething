@@ -6,7 +6,6 @@ import colors from "../config/colors";
 import eventsApi from "../api/events";
 import AppText from "../components/AppText";
 import AppButton from "../components/AppButton";
-import ActivityIndicator from "../components/ActivityIndicator";
 import useApi from "../Hooks/useApi";
 /*
 const events = [
