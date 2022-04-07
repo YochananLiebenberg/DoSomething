@@ -1,12 +1,18 @@
 import client from "./client";
 
+// Get user id from Storage
+import authStorage from "../auth/storage";
+
 const endpoint = "/events";
 const getEvents = () => client.get(endpoint);
 
-const addEvent = (event, onUploadProgress) => {
+const addEvent = async (event, onUploadProgress) => {
+  const user = await authStorage.getUser();
+  console.log(user.userId + " <---------- Trying with userId...");
   const data = new FormData();
   data.append("title", event.title);
   data.append("time", event.time);
+  data.append("userId", user.userId);
   data.append("categoryId", event.category.value);
   data.append("description", event.description);
 
