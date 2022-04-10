@@ -6,8 +6,9 @@ import authStorage from "../auth/storage";
 
 const endpoint = "/movies";
 
-export const updateLiking = (movieId) => {
-  return client.post("/movie", { movieId });
+export const updateLiking = async (movieObject) => {
+  const response = await client.post("/movie", { movieObject });
+  return response;
 };
 
 export const getMovies = () => {
@@ -15,7 +16,8 @@ export const getMovies = () => {
 };
 
 export const getMovie = async (searchItem) => {
-  return await client.post(endpoint, { searchItem });
+  const movie = await client.post(endpoint, { searchItem });
+  return movie;
 };
 
 export default {

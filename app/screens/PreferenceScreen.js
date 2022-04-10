@@ -55,8 +55,9 @@ function PreferenceScreen(props) {
     resetForm();
   };
 
-  const handleUpdateLiking = (movieId) => {
-    updateLikingApi.request(movieId);
+  const handleUpdateLiking = async (movieObject) => {
+    console.log("------------ Called!! -------------");
+    const response = await updateLikingApi.request(movieObject);
     getMoviesApi.request();
   };
 
@@ -65,7 +66,6 @@ function PreferenceScreen(props) {
     // Call the server (Do later...)
   };
 
-  console.log();
   return (
     <Screen>
       <View style={styles.searchBox}>
@@ -86,11 +86,13 @@ function PreferenceScreen(props) {
       <TouchableWithoutFeedback
         onPress={() => {
           console.log("Pressed!");
-          handleUpdateLiking(movie.id);
+          handleUpdateLiking(movie);
         }}
       >
         <View style={styles.frame}>
-          <Image source={{ uri: movie.Poster }} style={styles.poster} />
+          {movie && (
+            <Image source={{ uri: movie.Poster }} style={styles.poster} />
+          )}
         </View>
       </TouchableWithoutFeedback>
       <View style={styles.break}>
