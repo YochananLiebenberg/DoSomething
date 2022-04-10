@@ -32,6 +32,7 @@ const menueItems = [
       name: "heart",
       backgroundColor: colors.primary,
     },
+    targetScreen: "Preferences",
   },
 ];
 

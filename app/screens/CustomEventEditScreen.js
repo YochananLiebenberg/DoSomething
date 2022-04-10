@@ -44,6 +44,7 @@ const categories = [
 
 function CustomEventEditScreen() {
   const location = useLocation();
+
   const [uploadScreenVisible, setUploadScreenVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 

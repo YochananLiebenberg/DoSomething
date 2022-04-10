@@ -5,6 +5,7 @@ import { TransitionPresets } from "@react-navigation/stack";
 import AccountScreen from "../screens/AccountScreen";
 import MessagesScreen from "../screens/MessagesScreen";
 import colors from "../config/colors";
+import PreferenceScreen from "../screens/PreferenceScreen";
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,7 @@ const AccountNavigator = () => (
   >
     <Stack.Screen name="Account" component={AccountScreen} />
     <Stack.Screen name="Messages" component={MessagesScreen} />
+    <Stack.Screen name="Preferences" component={PreferenceScreen} />
   </Stack.Navigator>
 );
 
