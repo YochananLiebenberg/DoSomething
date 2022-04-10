@@ -17,6 +17,9 @@ apiClient.get = async (url, params, axiosConfig) => {
   const response = await get(url, params, axiosConfig);
 
   if (response.ok) {
+    if (url == "/members") {
+      return response;
+    }
     cache.store(url, response.data);
     return response;
   }

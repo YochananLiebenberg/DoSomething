@@ -8,7 +8,6 @@ const getEvents = () => client.get(endpoint);
 
 const addEvent = async (event, onUploadProgress) => {
   const user = await authStorage.getUser();
-  console.log(user.userId + " <---------- Trying with userId...");
   const data = new FormData();
   data.append("title", event.title);
   data.append("time", event.time);
@@ -27,7 +26,6 @@ const addEvent = async (event, onUploadProgress) => {
   if (event.location) {
     data.append("location", JSON.stringify(event.location));
   }
-
   return client.post(endpoint, data, {
     onUploadProgress: (progress) =>
       onUploadProgress(progress.loaded / progress.total),

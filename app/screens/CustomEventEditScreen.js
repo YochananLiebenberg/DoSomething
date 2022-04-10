@@ -81,6 +81,7 @@ function CustomEventEditScreen() {
             location: "",
             category: null,
             images: [],
+            members: [],
           }}
           onSubmit={handleSubmit}
           validationSchema={validationSchema}

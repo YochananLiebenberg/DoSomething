@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, StyleSheet, Platform, FlatList } from "react-native";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ListItem from "../components/ListItem";
@@ -7,9 +7,37 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Image } from "react-native-expo-image-cache";
 import { KeyboardAvoidingView } from "react-native";
 import ContactOrganiserForm from "../components/ContactOrganiserForm";
+import ListItemDeleteAction from "../components/ListItemDeleteAction";
+
+import ListItemSeperator from "../components/ListItemSeperator";
+import useApi from "../Hooks/useApi";
+import membersApi from "../api/members";
+import AppButton from "../components/AppButton";
+
+import authStorage from "../auth/storage";
 
 function EventDetailsScreen({ route }) {
   const event = route.params;
+  const getMembersApi = useApi(membersApi.getMembers);
+  const attendanceApi = useApi(membersApi.updateAttendance);
+
+  const { user } = useAuth();
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    getMembersApi.request(event.id);
+  }, []);
+
+  const checkAttendance = () => {
+    const members = getMembersApi.data;
+    for (var i = 0; i < members.length; i++) {
+      if (members[i].id === user.userId) {
+        return "Count me out";
+      }
+    }
+    return "Count me in";
+  };
+
   return (
     <KeyboardAvoidingView
       behavior="position"
@@ -29,17 +57,44 @@ function EventDetailsScreen({ route }) {
           <View style={styles.descriptionContainer}>
             <AppText styles={styles.title}>{event.title}</AppText>
             <AppText styles={styles.time}>{event.time}</AppText>
+            <AppButton
+              title={checkAttendance()}
+              onPress={() => {
+                attendanceApi.request(event.id);
+                getMembersApi.request(event.id);
+              }}
+            />
             <View style={styles.membersBreak}>
               <AppText style={styles.membersTag}>Participants</AppText>
             </View>
             <View style={styles.membersContainer}>
-              <ListItem
-                image={require("../assets/yoch.jpg")}
-                title="Mosh"
-                subTitle="mosh@domain.com"
+              <FlatList
+                data={getMembersApi.data}
+                keyExtractor={(member) => member.id}
+                renderItem={({ item }) => (
+                  <ListItem
+                    title={item.name}
+                    subTitle={item.email}
+                    image={require("../assets/profile.jpg")}
+                    onPress={() => console.log("Member selected", item)}
+                    renderRightActions={() => (
+                      <ListItemDeleteAction
+                        onPress={() => handleDelete(item)}
+                      />
+                    )}
+                  />
+                )}
+                ItemSeparatorComponent={ListItemSeperator}
+                refreshing={refreshing}
+                onRefresh={() => {
+                  getMembersApi.request(event.id);
+                }}
+                style={styles.container}
               />
             </View>
-            <ContactOrganiserForm event={event} />
+            <View style={styles.contact}>
+              <ContactOrganiserForm event={event} />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -68,8 +123,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   container: {
-    alignItems: "center",
-    paddingTop: 55,
+    paddingTop: 20,
     width: "100%",
     height: "100%",
     backgroundColor: colors.screenBackground,
@@ -77,15 +131,17 @@ const styles = StyleSheet.create({
   membersContainer: {
     flex: 1,
     width: "100%",
-    marginVertical: 10,
     borderRadius: 15,
     overflow: "hidden",
   },
-  membersTag: {},
+  contact: {
+    paddingTop: 20,
+    width: "100%",
+  },
   membersBreak: {
     alignItems: "center",
     width: "100%",
-    marginTop: 30,
+    marginTop: 20,
     backgroundColor: colors.beigeBreak,
     borderRadius: 10,
   },
