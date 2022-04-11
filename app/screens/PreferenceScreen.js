@@ -56,14 +56,8 @@ function PreferenceScreen(props) {
   };
 
   const handleUpdateLiking = async (movieObject) => {
-    console.log("------------ Called!! -------------");
     const response = await updateLikingApi.request(movieObject);
     getMoviesApi.request();
-  };
-
-  const handleUnlike = (movie) => {
-    // Delete the message from messages
-    // Call the server (Do later...)
   };
 
   return (
@@ -107,7 +101,7 @@ function PreferenceScreen(props) {
             subTitle={item.Plot}
             onPress={() => console.log("Movie selected", item)}
             renderRightActions={() => (
-              <ListItemDeleteAction onPress={() => handleUnlike(item)} />
+              <ListItemDeleteAction onPress={() => handleUpdateLiking(item)} />
             )}
           />
         )}

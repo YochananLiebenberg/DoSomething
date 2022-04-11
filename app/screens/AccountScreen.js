@@ -17,6 +17,7 @@ const menueItems = [
       name: "albums",
       backgroundColor: colors.primary,
     },
+    targetScreen: "My Events",
   },
   {
     title: "My Messages",

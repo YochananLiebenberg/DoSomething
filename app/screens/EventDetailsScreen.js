@@ -105,7 +105,8 @@ function EventDetailsScreen({ route }) {
 const styles = StyleSheet.create({
   image: {
     width: "70%",
-    height: 500,
+    height: undefined,
+    aspectRatio: 139 / 206,
   },
   descriptionContainer: {
     alignItems: "center",
@@ -148,7 +149,6 @@ const styles = StyleSheet.create({
   imageFrame: {
     alignItems: "center",
     width: "100%",
-    height: 500,
     shadowColor: "#470000",
     shadowOffset: { width: 7, height: 7 },
     shadowOpacity: 0.2,

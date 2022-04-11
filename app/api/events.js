@@ -32,7 +32,13 @@ const addEvent = async (event, onUploadProgress) => {
   });
 };
 
+export const deleteEvent = async (eventObject) => {
+  const response = await client.post("/event", { eventObject });
+  return response;
+};
+
 export default {
   addEvent,
   getEvents,
+  deleteEvent,
 };

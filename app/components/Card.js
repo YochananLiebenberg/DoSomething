@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   image: {
     width: "35%",
     height: undefined,
-    aspectRatio: 0.5,
+    aspectRatio: 139 / 206,
   },
   descriptionContainer: {
     padding: 20,
