@@ -16,7 +16,6 @@ const get = apiClient.get;
 apiClient.get = async (url, params, axiosConfig) => {
   const response = await get(url, params, axiosConfig);
 
-  console.log("CLIENT DATA: " + response.data);
   if (response.ok) {
     if (url == "/members") {
       return response;
