@@ -8,7 +8,6 @@ const endpoint = "/movie";
 
 export const getRecomendations = async () => {
   const recomendations = await client.get(endpoint);
-  console.log("RESULT: " + recomendations.data);
   return recomendations;
 };
 

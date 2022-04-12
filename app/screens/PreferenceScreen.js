@@ -75,7 +75,6 @@ function PreferenceScreen(props) {
     setRecomendations(result.data);
   };
 
-  console.log(recomendations);
   return (
     <Screen>
       <ScrollView bounces={false}>
@@ -99,7 +98,6 @@ function PreferenceScreen(props) {
         </View>
         <TouchableWithoutFeedback
           onPress={() => {
-            console.log("Pressed!");
             handleUpdateLiking(movie);
           }}
         >
@@ -138,81 +136,34 @@ function PreferenceScreen(props) {
         <View style={styles.break2}>
           <AppText style={styles.membersTag}>Reccomended for you</AppText>
         </View>
-        {recomendations && (
-          <>
-            <View style={styles.recomendations}>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  console.log("Pressed!");
-                  handleUpdateLiking(recomendations[0]);
+        <FlatList
+          data={recomendations}
+          ItemSeparatorComponent={() => {
+            return (
+              <View
+                style={{
+                  height: 100,
+                  width: 1,
+                  backgroundColor: "white",
                 }}
-              >
-                <Image
-                  source={{ uri: recomendations[0].Poster }}
-                  style={styles.poster}
-                />
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  console.log("Pressed!");
-                  handleUpdateLiking(recomendations[1]);
-                }}
-              >
-                <Image
-                  source={{ uri: recomendations[1].Poster }}
-                  style={styles.poster}
-                />
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  console.log("Pressed!");
-                  handleUpdateLiking(recomendations[2]);
-                }}
-              >
-                <Image
-                  source={{ uri: recomendations[2].Poster }}
-                  style={styles.poster}
-                />
-              </TouchableWithoutFeedback>
-            </View>
-
-            <View style={styles.recomendations}>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  console.log("Pressed!");
-                  handleUpdateLiking(recomendations[3]);
-                }}
-              >
-                <Image
-                  source={{ uri: recomendations[3].Poster }}
-                  style={styles.poster}
-                />
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  console.log("Pressed!");
-                  handleUpdateLiking(recomendations[4]);
-                }}
-              >
-                <Image
-                  source={{ uri: recomendations[4].Poster }}
-                  style={styles.poster}
-                />
-              </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  console.log("Pressed!");
-                  handleUpdateLiking(recomendations[5]);
-                }}
-              >
-                <Image
-                  source={{ uri: recomendations[5].Poster }}
-                  style={styles.poster}
-                />
-              </TouchableWithoutFeedback>
-            </View>
-          </>
-        )}
+              />
+            );
+          }}
+          horizontal={true}
+          keyExtractor={(movie) => movie.id}
+          renderItem={({ item }) => (
+            <TouchableWithoutFeedback
+              onPress={() => {
+                console.log("Pressed!");
+                handleUpdateLiking(item);
+              }}
+            >
+              <Image source={{ uri: item.Poster }} style={styles.poster2} />
+            </TouchableWithoutFeedback>
+          )}
+          directionalLockEnabled
+          showsHorizontalScrollIndicator={false}
+        />
       </ScrollView>
     </Screen>
   );
@@ -236,6 +187,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginTop: 20,
+    marginBottom: 10,
     backgroundColor: colors.beigeBreak,
     borderRadius: 10,
   },
@@ -247,6 +199,13 @@ const styles = StyleSheet.create({
   poster: {
     alignSelf: "center",
     width: "30%",
+    height: undefined,
+    aspectRatio: 139 / 206,
+    paddingTop: 20,
+  },
+  poster2: {
+    alignSelf: "center",
+    width: 100,
     height: undefined,
     aspectRatio: 139 / 206,
     paddingTop: 20,
