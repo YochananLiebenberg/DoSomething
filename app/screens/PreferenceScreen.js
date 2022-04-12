@@ -5,7 +5,9 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import ListItem from "../components/ListItem";
 import ListItemDeleteAction from "../components/ListItemDeleteAction";
 import ListItemSeperator from "../components/ListItemSeperator";
@@ -15,6 +17,7 @@ import colors from "../config/colors";
 import AppText from "../components/AppText";
 import useApi from "../Hooks/useApi";
 import moviesApi from "../api/movies";
+import flaskApi from "../api/flaskApi";
 import * as Yup from "yup";
 
 import {
@@ -35,12 +38,17 @@ function PreferenceScreen(props) {
   const getMovieApi = useApi(moviesApi.getMovie);
   const updateLikingApi = useApi(moviesApi.updateLiking);
 
+  // Get string from the Flask Api
+  const getRecomendationsApi = useApi(flaskApi.getRecomendations);
+
   const [refreshing, setRefreshing] = useState(false);
   const [searchFailed, setSearchFailed] = useState(false);
   const [movie, setMovie] = useState();
+  const [recomendations, setRecomendations] = useState(getRecomendations);
 
   useEffect(() => {
     getMoviesApi.request();
+    getRecomendations();
   }, []);
 
   const handleSubmit = async (searchItem, { resetForm }) => {
@@ -53,65 +61,159 @@ function PreferenceScreen(props) {
     setSearchFailed(false);
     setMovie(result.data);
     resetForm();
+    Keyboard.dismiss();
   };
 
   const handleUpdateLiking = async (movieObject) => {
     const response = await updateLikingApi.request(movieObject);
     getMoviesApi.request();
+    getRecomendations();
   };
 
+  const getRecomendations = async () => {
+    const result = await flaskApi.getRecomendations();
+    setRecomendations(result.data);
+  };
+
+  console.log(recomendations);
   return (
     <Screen>
-      <View style={styles.searchBox}>
-        <AppForm
-          initialValues={{
-            Title: "",
-          }}
-          onSubmit={handleSubmit}
-          validationSchema={validationSchema}
-        >
-          <AppFormField maxLength={255} name="Title" placeholder="Title" />
-          {searchFailed && (
-            <ErrorMessage error="Could not find Movie" visible={searchFailed} />
-          )}
-          <SubmitButton title="Search" style={{ width: 20 }} />
-        </AppForm>
-      </View>
-      <TouchableWithoutFeedback
-        onPress={() => {
-          console.log("Pressed!");
-          handleUpdateLiking(movie);
-        }}
-      >
-        <View style={styles.frame}>
-          {movie && (
-            <Image source={{ uri: movie.Poster }} style={styles.poster} />
-          )}
-        </View>
-      </TouchableWithoutFeedback>
-      <View style={styles.break}>
-        <AppText style={styles.membersTag}>Liked Movies</AppText>
-      </View>
-      <FlatList
-        data={getMoviesApi.data}
-        keyExtractor={(movie) => movie.id}
-        renderItem={({ item }) => (
-          <ListItem
-            title={item.Title}
-            subTitle={item.Plot}
-            onPress={() => console.log("Movie selected", item)}
-            renderRightActions={() => (
-              <ListItemDeleteAction onPress={() => handleUpdateLiking(item)} />
+      <ScrollView bounces={false}>
+        <View style={styles.searchBox}>
+          <AppForm
+            initialValues={{
+              Title: "",
+            }}
+            onSubmit={handleSubmit}
+            validationSchema={validationSchema}
+          >
+            <AppFormField maxLength={255} name="Title" placeholder="Title" />
+            {searchFailed && (
+              <ErrorMessage
+                error="Could not find Movie"
+                visible={searchFailed}
+              />
             )}
-          />
+            <SubmitButton title="Search" style={{ width: 20 }} />
+          </AppForm>
+        </View>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            console.log("Pressed!");
+            handleUpdateLiking(movie);
+          }}
+        >
+          <View style={styles.frame}>
+            {movie && (
+              <Image source={{ uri: movie.Poster }} style={styles.poster} />
+            )}
+          </View>
+        </TouchableWithoutFeedback>
+
+        <View style={styles.break}>
+          <AppText style={styles.membersTag}>Liked Movies</AppText>
+        </View>
+        <FlatList
+          data={getMoviesApi.data}
+          keyExtractor={(movie) => movie.id}
+          renderItem={({ item }) => (
+            <ListItem
+              title={item.Title}
+              subTitle={item.Plot}
+              onPress={() => setMovie(item)}
+              renderRightActions={() => (
+                <ListItemDeleteAction
+                  onPress={() => handleUpdateLiking(item)}
+                />
+              )}
+            />
+          )}
+          ItemSeparatorComponent={ListItemSeperator}
+          refreshing={refreshing}
+          onRefresh={() => {
+            getMoviesApi.request();
+          }}
+          style={styles.container}
+        />
+        <View style={styles.break2}>
+          <AppText style={styles.membersTag}>Reccomended for you</AppText>
+        </View>
+        {recomendations && (
+          <>
+            <View style={styles.recomendations}>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  console.log("Pressed!");
+                  handleUpdateLiking(recomendations[0]);
+                }}
+              >
+                <Image
+                  source={{ uri: recomendations[0].Poster }}
+                  style={styles.poster}
+                />
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  console.log("Pressed!");
+                  handleUpdateLiking(recomendations[1]);
+                }}
+              >
+                <Image
+                  source={{ uri: recomendations[1].Poster }}
+                  style={styles.poster}
+                />
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  console.log("Pressed!");
+                  handleUpdateLiking(recomendations[2]);
+                }}
+              >
+                <Image
+                  source={{ uri: recomendations[2].Poster }}
+                  style={styles.poster}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+
+            <View style={styles.recomendations}>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  console.log("Pressed!");
+                  handleUpdateLiking(recomendations[3]);
+                }}
+              >
+                <Image
+                  source={{ uri: recomendations[3].Poster }}
+                  style={styles.poster}
+                />
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  console.log("Pressed!");
+                  handleUpdateLiking(recomendations[4]);
+                }}
+              >
+                <Image
+                  source={{ uri: recomendations[4].Poster }}
+                  style={styles.poster}
+                />
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  console.log("Pressed!");
+                  handleUpdateLiking(recomendations[5]);
+                }}
+              >
+                <Image
+                  source={{ uri: recomendations[5].Poster }}
+                  style={styles.poster}
+                />
+              </TouchableWithoutFeedback>
+            </View>
+          </>
         )}
-        ItemSeparatorComponent={ListItemSeperator}
-        refreshing={refreshing}
-        onRefresh={() => {
-          getMoviesApi.request();
-        }}
-        style={styles.container}
-      />
+      </ScrollView>
     </Screen>
   );
 }
@@ -124,6 +226,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   break: {
+    alignItems: "center",
+    width: "100%",
+    marginTop: 20,
+    backgroundColor: colors.beigeBreak,
+    borderRadius: 10,
+  },
+  break2: {
     alignItems: "center",
     width: "100%",
     marginTop: 20,
@@ -146,6 +255,11 @@ const styles = StyleSheet.create({
     shadowColor: "#470000",
     shadowOffset: { width: 7, height: 7 },
     shadowOpacity: 0.2,
+  },
+  recomendations: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingTop: 15,
   },
 });
 
