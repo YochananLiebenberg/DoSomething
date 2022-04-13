@@ -8,5 +8,6 @@ export default {
     color: colors.textDark,
     fontSize: 18,
     fontFamily: Platform.OS === "android" ? "Roboto" : "Copperplate",
+    flexDirection: "row",
   },
 };

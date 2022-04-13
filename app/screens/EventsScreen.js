@@ -7,22 +7,6 @@ import eventsApi from "../api/events";
 import AppText from "../components/AppText";
 import AppButton from "../components/AppButton";
 import useApi from "../Hooks/useApi";
-/*
-const events = [
-  {
-    id: 1,
-    title: "Movie Event 1",
-    time: "20:00",
-    image: require("../assets/poster.jpg"),
-  },
-  {
-    id: 2,
-    title: "Movie Event 2",
-    time: "7:00",
-    image: require("../assets/poster.jpg"),
-  },
-];
-*/
 
 function EventsScreen({ navigation }) {
   const getEventsApi = useApi(eventsApi.getEvents);
@@ -49,6 +33,7 @@ function EventsScreen({ navigation }) {
               title={item.title}
               subTitle={item.time}
               imageUrl={item.images[0].url}
+              description={item.description}
               onPress={() => navigation.navigate("EventDetails", item)}
               style={styles.card}
               thumbnailUrl={item.images[0].thumbnailUrl}

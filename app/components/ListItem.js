@@ -10,6 +10,7 @@ function ListItem({
   title,
   subTitle,
   image,
+  description,
   IconComponent,
   onPress,
   renderRightActions,
@@ -30,6 +31,11 @@ function ListItem({
             </AppText>
             {subTitle && (
               <AppText style={styles.subTitle} numberOfLines={2}>
+                {subTitle}
+              </AppText>
+            )}
+            {description && (
+              <AppText style={styles.description} numberOfLines={4}>
                 {subTitle}
               </AppText>
             )}
@@ -81,6 +87,10 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   subTitle: {
+    color: colors.placeholder,
+    fontSize: 12,
+  },
+  description: {
     color: colors.placeholder,
     fontSize: 12,
   },

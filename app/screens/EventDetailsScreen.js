@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Platform, FlatList } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Platform,
+  FlatList,
+  TouchableWithoutFeedback,
+} from "react-native";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 import ListItem from "../components/ListItem";
@@ -13,6 +19,7 @@ import ListItemSeperator from "../components/ListItemSeperator";
 import useApi from "../Hooks/useApi";
 import membersApi from "../api/members";
 import AppButton from "../components/AppButton";
+import groupApi from "../api/group";
 
 import authStorage from "../auth/storage";
 
@@ -23,9 +30,14 @@ function EventDetailsScreen({ route }) {
 
   const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
+  const [isMovieEvent, setIsMovieEvent] = useState(false);
 
   useEffect(() => {
     getMembersApi.request(event.id);
+    if (event.categoryId === 1) {
+      getGroupRecomendations();
+      setIsMovieEvent(true);
+    }
   }, []);
 
   const checkAttendance = () => {
@@ -36,6 +48,10 @@ function EventDetailsScreen({ route }) {
       }
     }
     return "Count me in";
+  };
+
+  const getGroupRecomendations = async () => {
+    const result = await groupApi.getRecomendationsForGroup(event);
   };
 
   return (
@@ -55,8 +71,11 @@ function EventDetailsScreen({ route }) {
           </View>
 
           <View style={styles.descriptionContainer}>
-            <AppText styles={styles.title}>{event.title}</AppText>
-            <AppText styles={styles.time}>{event.time}</AppText>
+            <AppText styles={styles.titleStyle}>{event.title}</AppText>
+            <AppText styles={styles.timeStyle}>{event.time}</AppText>
+            <AppText styles={styles.descriptionStyle}>
+              {event.description}
+            </AppText>
             <AppButton
               title={checkAttendance()}
               onPress={() => {
@@ -96,6 +115,46 @@ function EventDetailsScreen({ route }) {
               <ContactOrganiserForm event={event} />
             </View>
           </View>
+
+          {isMovieEvent && (
+            <>
+              <View style={styles.break2}>
+                <AppText style={styles.membersTag}>
+                  Reccomended for the Group
+                </AppText>
+              </View>
+              <FlatList
+                data={event.recommendations}
+                ItemSeparatorComponent={() => {
+                  return (
+                    <View
+                      style={{
+                        height: 100,
+                        width: 1,
+                        backgroundColor: "white",
+                      }}
+                    />
+                  );
+                }}
+                horizontal={true}
+                keyExtractor={(movie) => movie.id}
+                renderItem={({ item }) => {
+                  return (
+                    <TouchableWithoutFeedback
+                      onPress={() => {
+                        console.log("Pressed!");
+                        handleUpdateLiking(item);
+                      }}
+                    >
+                      <Image uri={item.Poster} style={styles.poster2} />
+                    </TouchableWithoutFeedback>
+                  );
+                }}
+                directionalLockEnabled
+                showsHorizontalScrollIndicator={false}
+              />
+            </>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -113,12 +172,13 @@ const styles = StyleSheet.create({
     padding: 20,
     width: "100%",
   },
-  title: {
-    fontSize: 24,
+  titleStyle: {
+    color: colors.danger,
+    fontSize: 25,
     fontWeight: "500",
     marginVertical: 10,
   },
-  time: {
+  timeStyle: {
     color: colors.secondary,
     fontWeight: "bold",
     fontSize: 20,
@@ -152,6 +212,25 @@ const styles = StyleSheet.create({
     shadowColor: "#470000",
     shadowOffset: { width: 7, height: 7 },
     shadowOpacity: 0.2,
+  },
+  descriptionStyle: {
+    color: colors.placeholder,
+    fontSize: 12,
+  },
+  break2: {
+    alignItems: "center",
+    width: "100%",
+    marginTop: 20,
+    marginBottom: 10,
+    backgroundColor: colors.beigeBreak,
+    borderRadius: 10,
+  },
+  poster2: {
+    alignSelf: "center",
+    width: 100,
+    height: undefined,
+    aspectRatio: 139 / 206,
+    paddingTop: 20,
   },
 });
 
