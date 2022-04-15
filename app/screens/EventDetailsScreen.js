@@ -31,6 +31,7 @@ function EventDetailsScreen({ route }) {
   const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
   const [isMovieEvent, setIsMovieEvent] = useState(false);
+  const [recommendations, setRecommendations] = useState(event.recommendations);
 
   useEffect(() => {
     getMembersApi.request(event.id);
@@ -51,7 +52,13 @@ function EventDetailsScreen({ route }) {
   };
 
   const getGroupRecomendations = async () => {
+    setRecommendations([]);
     const result = await groupApi.getRecomendationsForGroup(event);
+    console.log(
+      "----------------------------------------------------------------------------"
+    );
+    console.log(result);
+    setRecommendations(result);
   };
 
   return (
@@ -81,6 +88,7 @@ function EventDetailsScreen({ route }) {
               onPress={() => {
                 attendanceApi.request(event.id);
                 getMembersApi.request(event.id);
+                getGroupRecomendations();
               }}
             />
             <View style={styles.membersBreak}>
@@ -116,7 +124,7 @@ function EventDetailsScreen({ route }) {
             </View>
           </View>
 
-          {isMovieEvent && (
+          {isMovieEvent && recommendations && (
             <>
               <View style={styles.break2}>
                 <AppText style={styles.membersTag}>
@@ -124,7 +132,7 @@ function EventDetailsScreen({ route }) {
                 </AppText>
               </View>
               <FlatList
-                data={event.recommendations}
+                data={recommendations.data}
                 ItemSeparatorComponent={() => {
                   return (
                     <View
